@@ -38,6 +38,11 @@ export const Todo = () => {
         }
     }
 
+    const handleReset = () => {
+        setArr([])
+        setShow(false)
+    }
+
     return (
         <div className="d-flex justify-content-around">
             <div className="">
@@ -49,7 +54,7 @@ export const Todo = () => {
                     events={arr}
                     startAccessor="start"
                     endAccessor="end"
-                    style={{ width: 600, height: 500 }}
+                    style={{ width: 900, height: 500 }}
                     eventPropGetter={(event, start, end, isSelected) => ({
                         event,
                         start,
@@ -71,6 +76,7 @@ export const Todo = () => {
                                 setTitle(values.title)
                                 setArr([...arr, ...[{ "title": values.title, "desc": values.content, "start": selectedDate, "end": selectedDate }]])
                             }}
+                            onReset={() =>{}}
                         >
                             {({ errors, touched }) => (
                                 <Form >
@@ -87,7 +93,14 @@ export const Todo = () => {
                                             <div>{errors.content}</div>
                                         ) : null}
                                     </div>
-                                    <button type="submit">Submit</button>
+                                    <div className="d-flex">
+                                        <div className="p-2">
+                                            <button type="submit">Submit</button>
+                                        </div>
+                                        <div className="p-2">
+                                            <button onClick={() => handleReset()} type="submit">clear</button>
+                                        </div>
+                                    </div>
                                 </Form>
                             )}
                         </Formik>
@@ -97,10 +110,10 @@ export const Todo = () => {
             {arr.length <= 0 ? <div className="align-self-center">
                 <h5>No Events Added</h5>
             </div>
-                : <div className="vh-100 overflow-auto w-100">
+                : <div className="vh-100 overflow-auto w-100 ">
                     {arr.map(data => (
-                        <div className="p-2">
-                            <div className="card">
+                        <div className="p-2 align-self-cente">
+                            <div className="card w-50">
                                 <div className="card-body">
                                     <h5 className="card-title">{data.title}</h5>
                                     <p className="card-text">{data.desc}</p>
