@@ -23,7 +23,7 @@ export const Todo = () => {
     const [selectedDate, setSelectedDate] = useState();
     const [show, setShow] = useState(false);
     const [title, setTitle] = useState("Add title");
-    const [arr, setArr] = useState([{ "title": "", "desc": "", "date": "" }]);
+    const [arr, setArr] = useState([]);
     const myEventsList = [
         {
             start: selectedDate,
@@ -46,6 +46,7 @@ export const Todo = () => {
 
     return (
         <div className="d-flex justify-content-around">
+            {console.log(arr.length)}
             <div className="">
                 <Calendar
                     selectable={true}
@@ -74,7 +75,7 @@ export const Todo = () => {
                             validationSchema={Schema}
                             onSubmit={values => {
                                 setTitle(values.title)
-                                setArr(pre => [...pre, ...[{ "title": values.title, "desc": values.content, "date": selectedDate }]])
+                                setArr([...arr, ...[{ "title": values.title, "desc": values.content, "date": selectedDate }]])
                             }}
                         >
                             {({ errors, touched }) => (
@@ -94,12 +95,14 @@ export const Todo = () => {
                 }
                 </div>
             </div>
-            <div className="">
+            <div className="vh-100 ">
                 {arr.map(data => (
-                    <div>
-                        <p>{data.title}</p>
-                        <p>{data.desc}</p>
-                        <p>{data.date}</p>
+                    <div className="card">
+                        <div className="card-body">
+                            <h5 className="card-title">{data.title}</h5>
+                            <p className="card-text">{data.desc}</p>
+                            <p>{data.date}</p>
+                        </div>
                     </div>
                 ))}
             </div>
