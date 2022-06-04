@@ -24,13 +24,6 @@ export const Todo = () => {
     const [show, setShow] = useState(false);
     const [title, setTitle] = useState("Add title");
     const [arr, setArr] = useState([]);
-    const myEventsList = [
-        {
-            start: selectedDate,
-            end: selectedDate,
-            title: show ? title : ""
-        }
-    ];
 
     const checkSlot = (e) => {
         let date = moment(e).format("MM/DD/YY")
@@ -39,6 +32,7 @@ export const Todo = () => {
         if (diffe) {
             setSelectedDate(date)
             setShow(diffe)
+            setTitle("Add title")
         } else {
             setShow(diffe)
         }
@@ -46,13 +40,13 @@ export const Todo = () => {
 
     return (
         <div className="d-flex justify-content-around">
-            {console.log(arr.length)}
             <div className="">
                 <Calendar
                     selectable={true}
+                    views={"day"}
                     localizer={localizer}
                     onSelectSlot={(e) => checkSlot(e.start)}
-                    events={myEventsList}
+                    events={arr}
                     startAccessor="start"
                     endAccessor="end"
                     style={{ width: 600, height: 500 }}
@@ -75,19 +69,24 @@ export const Todo = () => {
                             validationSchema={Schema}
                             onSubmit={values => {
                                 setTitle(values.title)
-                                setArr([...arr, ...[{ "title": values.title, "desc": values.content, "date": selectedDate }]])
+                                setArr([...arr, ...[{ "title": values.title, "desc": values.content, "start": selectedDate, "end": selectedDate }]])
                             }}
                         >
                             {({ errors, touched }) => (
                                 <Form >
-                                    <Field name="title" placeholder="Title" />
-                                    {errors.title && touched.title ? (
-                                        <div>{errors.title}</div>
-                                    ) : null}
-                                    <Field name="content" placeholder="content" />
-                                    {errors.content && touched.content ? (
-                                        <div>{errors.content}</div>
-                                    ) : null}
+                                    <div><p>Date selected: {selectedDate}</p></div>
+                                    <div style={{ padding: 2 }}>
+                                        <Field name="title" placeholder="Title" maxLength={20} />
+                                        {errors.title && touched.title ? (
+                                            <div>{errors.title}</div>
+                                        ) : null}
+                                    </div>
+                                    <div style={{ padding: 2 }}>
+                                        <Field name="content" placeholder="content" />
+                                        {errors.content && touched.content ? (
+                                            <div>{errors.content}</div>
+                                        ) : null}
+                                    </div>
                                     <button type="submit">Submit</button>
                                 </Form>
                             )}
@@ -95,17 +94,23 @@ export const Todo = () => {
                 }
                 </div>
             </div>
-            <div className="vh-100 ">
-                {arr.map(data => (
-                    <div className="card">
-                        <div className="card-body">
-                            <h5 className="card-title">{data.title}</h5>
-                            <p className="card-text">{data.desc}</p>
-                            <p>{data.date}</p>
-                        </div>
-                    </div>
-                ))}
+            {arr.length <= 0 ? <div className="align-self-center">
+                <h5>No Events Added</h5>
             </div>
+                : <div className="vh-100 overflow-auto w-100">
+                    {arr.map(data => (
+                        <div className="p-2">
+                            <div className="card">
+                                <div className="card-body">
+                                    <h5 className="card-title">{data.title}</h5>
+                                    <p className="card-text">{data.desc}</p>
+                                    <p>{data.date}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>}
+
         </div >
     )
 }
