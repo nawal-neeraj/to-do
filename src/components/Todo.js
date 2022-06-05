@@ -1,29 +1,21 @@
 import React, { useState } from "react";
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
-import * as yup from 'yup';
 import { Formik, Field, Form } from 'formik';
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import { useSelector, useDispatch } from "react-redux";
+
+import { Schema } from '../schemas/formSchema';
+import { EventsList } from './events'
+import {setShow, setArr, setTitle, setClearArr} from '../actions/todoAction';
 
 const localizer = momentLocalizer(moment)
 
-const Schema = yup.object().shape({
-    title: yup.string()
-        .min(2, 'Too Short!')
-        .max(20, 'Too Long!')
-        .required('Required'),
-    content: yup.string()
-        .min(10, 'Too Short!')
-        .max(40, 'Too Long!')
-        .required('Required'),
-});
-
 export const Todo = () => {
+    const {show, title, arr} = useSelector(state => state.mainReducer.updateTodo)
     const [curretnDate, setCurretnDate] = useState(Date);
     const [selectedDate, setSelectedDate] = useState();
-    const [show, setShow] = useState(false);
-    const [title, setTitle] = useState("Add title");
-    const [arr, setArr] = useState([]);
+    const dispatch = useDispatch()
 
     const checkSlot = (e) => {
         let date = moment(e).format("MM/DD/YY")
@@ -31,20 +23,22 @@ export const Todo = () => {
         let diffe = moment(date).diff(previousDate) >= 0
         if (diffe) {
             setSelectedDate(date)
-            setShow(diffe)
-            setTitle("Add title")
+            dispatch(setShow(diffe))
+            dispatch(setTitle("Add title"))
         } else {
-            setShow(diffe)
+            dispatch(setShow(diffe))
+            alert("Please select coming Date!!!")
         }
     }
 
     const handleReset = () => {
-        setArr([])
-        setShow(false)
+        dispatch(setClearArr([]))
+        dispatch(setShow(false))
     }
 
     return (
         <div className="d-flex justify-content-around">
+            {/* {console.log(`from reducer===> ${JSON.stringify(states)}`)} */}
             <div className="">
                 <Calendar
                     selectable={true}
@@ -63,7 +57,10 @@ export const Todo = () => {
                         style: { backgroundColor: show ? "blue" : "white" }
                     })}
                 />
-                {show ? "" : <p>Please plan for next date</p>}
+                {show ? ""
+                    :
+                    <p>Please select date</p>}
+
                 <div style={{ padding: 10 }}>{
                     !show ? null :
                         <Formik
@@ -74,13 +71,13 @@ export const Todo = () => {
                             validationSchema={Schema}
                             onSubmit={values => {
                                 setTitle(values.title)
-                                setArr([...arr, ...[{ "title": values.title, "desc": values.content, "start": selectedDate, "end": selectedDate }]])
+                                dispatch(setArr({ "title": values.title, "desc": values.content, "start": selectedDate, "end": selectedDate }))
                             }}
-                            onReset={() =>{}}
+                            onReset={() => { }}
                         >
                             {({ errors, touched }) => (
                                 <Form >
-                                    <div><p>Date selected: {selectedDate}</p></div>
+                                    <div><p>Add envent on selected Date: {selectedDate}</p></div>
                                     <div style={{ padding: 2 }}>
                                         <Field name="title" placeholder="Title" maxLength={20} />
                                         {errors.title && touched.title ? (
@@ -111,19 +108,10 @@ export const Todo = () => {
                 <h5>No Events Added</h5>
             </div>
                 : <div className="vh-100 overflow-auto w-100 ">
-                    {arr.map(data => (
-                        <div className="p-2 align-self-cente">
-                            <div className="card w-50">
-                                <div className="card-body">
-                                    <h5 className="card-title">{data.title}</h5>
-                                    <p className="card-text">{data.desc}</p>
-                                    <p>{data.date}</p>
-                                </div>
-                            </div>
-                        </div>
+                    {arr.map(events => (
+                        <EventsList data={events} />
                     ))}
                 </div>}
-
         </div >
     )
 }

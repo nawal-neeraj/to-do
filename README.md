@@ -38,10 +38,16 @@ npm i <dependency>
 ### Form Schema Management
 [Yup](https://github.com/jquense/yup)
 
+### Redux for State management
+[Redux](https://react-redux.js.org/introduction/getting-started)
+
 ##Files and Folder
 ```
-───to-do
+to-do
     ├───public
     └───src
-        └───components
+        ├───actions
+        ├───components
+        ├───reducer
+        └───schemas
 ```
