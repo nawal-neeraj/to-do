@@ -18,8 +18,8 @@ export const Todo = () => {
     const dispatch = useDispatch();
 
     const checkSlot = (e) => {
-        let date = moment(e).format("MM/DD/YY");
-        let previousDate = moment(curretnDate).format("MM/DD/YY");
+        let date = moment(e).format("MM/DD/YY h:mm:ss a");
+        let previousDate = moment(curretnDate).format("MM/DD/YY h:mm:ss a");
         let diffe = moment(date).diff(previousDate) >= 0;
         if (diffe) {
             setSelectedDate(date);
@@ -48,6 +48,7 @@ export const Todo = () => {
                     startAccessor="start"
                     endAccessor="end"
                     style={{ width: 900, height: 500 }}
+                    
                     eventPropGetter={(event, start, end, isSelected) => ({
                         event,
                         start,
@@ -68,8 +69,9 @@ export const Todo = () => {
                                 content: '',
                             }}
                             validationSchema={Schema}
-                            onSubmit={values => {
+                            onSubmit={(values, {resetForm}) => {
                                 setTitle(values.title)
+                                resetForm({values:''})
                                 dispatch(setArr({ "title": values.title, "desc": values.content, "start": selectedDate, "end": selectedDate }))
                             }}
                             onReset={() => { }}
@@ -91,10 +93,10 @@ export const Todo = () => {
                                     </div>
                                     <div className="d-flex">
                                         <div className="p-2">
-                                            <button type="submit">Submit</button>
+                                            <button class="btn btn-primary" type="submit">Submit</button>
                                         </div>
                                         <div className="p-2">
-                                            <button onClick={() => handleReset()} type="submit">clear</button>
+                                            <button class="btn btn-danger" onClick={() => handleReset()} type="submit">clear</button>
                                         </div>
                                     </div>
                                 </Form>
