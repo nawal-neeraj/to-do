@@ -6,39 +6,38 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useSelector, useDispatch } from "react-redux";
 
 import { Schema } from '../schemas/formSchema';
-import { EventsList } from './events'
+import { EventsList } from './events';
 import {setShow, setArr, setTitle, setClearArr} from '../actions/todoAction';
 
-const localizer = momentLocalizer(moment)
+const localizer = momentLocalizer(moment);
 
 export const Todo = () => {
-    const {show, title, arr} = useSelector(state => state.mainReducer.updateTodo)
+    const {show, title, arr} = useSelector(state => state.mainReducer.updateTodo);
     const [curretnDate, setCurretnDate] = useState(Date);
     const [selectedDate, setSelectedDate] = useState();
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
     const checkSlot = (e) => {
-        let date = moment(e).format("MM/DD/YY")
-        let previousDate = moment(curretnDate).format("MM/DD/YY")
-        let diffe = moment(date).diff(previousDate) >= 0
+        let date = moment(e).format("MM/DD/YY");
+        let previousDate = moment(curretnDate).format("MM/DD/YY");
+        let diffe = moment(date).diff(previousDate) >= 0;
         if (diffe) {
-            setSelectedDate(date)
-            dispatch(setShow(diffe))
+            setSelectedDate(date);
+            dispatch(setShow(diffe));
             dispatch(setTitle("Add title"))
         } else {
-            dispatch(setShow(diffe))
-            alert("Please select coming Date!!!")
+            dispatch(setShow(diffe));
+            alert("Please select upcoming Dates!!!");
         }
     }
 
     const handleReset = () => {
-        dispatch(setClearArr([]))
-        dispatch(setShow(false))
+        dispatch(setClearArr([]));
+        dispatch(setShow(false));
     }
 
     return (
         <div className="d-flex justify-content-around">
-            {/* {console.log(`from reducer===> ${JSON.stringify(states)}`)} */}
             <div className="">
                 <Calendar
                     selectable={true}
